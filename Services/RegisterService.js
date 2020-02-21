@@ -14,13 +14,13 @@ class RegisterService {
 
 
   async create() {
+
     const model = new this.model()
     Object.assign(model, this.sanitizePostedData(this.request.body));
 
-    const user =  [await model.save()];
+    const user =  await model.save();
     const token = await model.generateAuthToken();
-    console.log('toktoktot', token)
-    return [{user, token}];
+    return {user, token};
   }
 
   /**

@@ -6,6 +6,8 @@ module.exports  = function(request){
  
   function makeModel(){
     switch(entity){
+      case 'Logout':
+        return null;    
       case 'Login':
       case 'User':
       case 'Register':

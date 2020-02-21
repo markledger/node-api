@@ -1,4 +1,4 @@
-var express = require('express');
+	var express = require('express');
 var router = express.Router();
 const ApiServiceProvider = require('../Services/ApiService');
 const mongoose = require('mongoose');
@@ -8,28 +8,24 @@ const authorisation = require('../middleware/authorisation');
 const commonRoutes = ['user'];
 const baseRoute = {
 	'get' : `^/:entity(${commonRoutes.join('|')})`,
-	'post' :  `^/:entity(${commonRoutes.join('|')})`,	
+	'post' :  `^/:entity(${commonRoutes.join('|')}|logout)`,	
 	'put' :  `^/:entity(${commonRoutes.join('|')})`
 };
 
 
-router.post('/register', function(req,res,next){
+router.post('/register', function(req, res, next){
 	req.params.entity = 'register';
 	next()
 }, ApiController.create);
 
 
 
-router.post('/login', function(req,res,next){
+router.post('/login', function(req, res, next){
 	req.params.entity = 'login';
 	next()
 }, ApiController.create);
 
 
-router.post('/user/logout', function(req,res,next){
-	req.params.entity = 'logout';
-	next()
-}, ApiController.create);
 
 
 router.get(`${baseRoute.get}/:id?`, authorisation, ApiController.get);

@@ -19,12 +19,13 @@ class LoginService extends ApiService {
 
 
   async create() {
+    console.log('LOGIN SERVE')
     try{
        const user = await this.model.findByLoginCredentials(this.request.body.email, this.request.body.password);
        const token = await user.generateAuthToken()
        return {user, token};
     }catch(error){
-
+      return error.message;
     }
   }
 

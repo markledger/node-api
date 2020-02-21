@@ -71,10 +71,11 @@ UserSchema.statics.findByLoginCredentials = async function(email, password){
 
 UserSchema.methods.generateAuthToken = async function(){
     const user = this;
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.SALT);
+    console.log(user._id);
+    const token = jwt.sign({ _id: user._id }, process.env.SALT);
     user.tokens = user.tokens.concat({ token });
     await user.save();
-    console.log(token);
+
     return token;
 }
 
