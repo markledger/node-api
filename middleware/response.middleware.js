@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const helpers = require('../helpers');
 const get = require('lodash/get');
 const mung = require('express-mung');
+const modelProvider = require('../Providers/ModelProvider');
+
 
 function transform(entity, preserveFields)
 {
@@ -16,10 +18,10 @@ function transform(entity, preserveFields)
 	return transformed;
 }
 
-function removeHiddenOnApiFields(body, request, response){
-	const model = mongoose.model(helpers.ucfirst(request.params.entity));
+function removeHiddenOnApiFields(body, request, response, ){
+	const model = modelProvider(request).makeModel()// mongoose.model(helpers.ucfirst(request.params.entity));
 	const transformed = [];
-	
+	return;
 	return body.map((entity) => {
 		console.log(entity);
 		return transform(entity, model.showOnApi)

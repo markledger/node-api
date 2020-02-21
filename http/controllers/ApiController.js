@@ -4,9 +4,20 @@ const get = require('lodash/get');
 const helpers = require('../../helpers');
 const ApiService = require('../../Services/ApiService');
 
+
 function makeService(request)
 {
-	return new ApiService(request);
+	const entity = helpers.ucfirst(request.params.entity);
+
+	switch(entity){
+		case 'Login':
+		case 'Register':
+			const CustomService = require(`../../Services/${entity}Service`);
+			return new CustomService(request);
+		default:
+			return new ApiService(request);	
+	}
+	
 };
 
 
@@ -45,9 +56,11 @@ exports.updateOne = async (request, response, next) => {
 
 
 exports.create = async (request, response, next) => {
-	 const service = new makeService(request);
+	 const service = makeService(request);
+
 	 try{
 	    const savedEntity = await service.create();
+	  
 		return response.status(201).json(savedEntity);
 	       
     } catch(err){

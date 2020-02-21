@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
 const pick = require('lodash/pick');
 const get = require('lodash/get');
 const helpers = require('../helpers')
+const modelProvider = require('../Providers/ModelProvider');
 
 class ApiService { 
 
@@ -9,7 +9,7 @@ class ApiService {
   constructor(request)
   {
     this.request = request;
-    this.model = mongoose.model(helpers.ucfirst(request.params.entity));
+    this.model = modelProvider(request).makeModel();
   }
 
 

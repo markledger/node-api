@@ -16,6 +16,10 @@ function ValidationErrorHandler(error, request, response, next){
     })
   }
 
+  if(error.name === 'LoginError') {
+    return response.status(404).json({errors: [error.message]});
+  }
+
   next(error)
 }
 
@@ -28,8 +32,7 @@ function checkPermission(request, response, next){
   next();
 }
 
-router.use('/api', require('./login'))
-router.use('/api', [checkPermission], require('./api'))
+router.use('/api', require('./api'))
 router.use(ValidationErrorHandler);
 
 

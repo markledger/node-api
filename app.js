@@ -5,10 +5,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose  = require('mongoose');
 const mung = require('express-mung');
-const removeHiddenOnApiFields = require('./config/response.middleware');
+const removeHiddenOnApiFields = require('./middleware/response.middleware');
 const isProduction = process.env.NODE_ENV === 'production';
-
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 if(isProduction){
   mongoose.connect(process.env.MONGODB_URI);
@@ -23,7 +23,6 @@ if(isProduction){
 }
 
 require('./models/User');
-
 
 
 var app = express();
@@ -46,7 +45,7 @@ app.use(require('./routes'))
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   if(res.status(404)){
-    res.send([]);
+    res.send({error:["No data found"]});
   }
 });
 
