@@ -19,7 +19,7 @@ function transform(entity, preserveFields)
 function removeHiddenOnApiFields(body, request, response){
 	const model = mongoose.model(helpers.ucfirst(request.params.entity));
 	const transformed = [];
-	console.log("BODYBODYBODY REMOVE  HIIDE FIELDS",body);
+	
 	return body.map((entity) => {
 		console.log(entity);
 		return transform(entity, model.showOnApi)

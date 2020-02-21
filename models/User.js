@@ -42,6 +42,9 @@ UserSchema.statics.showOnApi = ['_id','first_name','last_name', 'email', 'create
 // register uniqueValidator plugin
 UserSchema.plugin(uniqueValidator, {message: 'is already taken'});
 
+UserSchema.methods.touchUpdatedTimestamp = function(){
+    this.updatedAt = new Date();
+}
 
 UserSchema.pre('save', async function(next) {
     const user = this;

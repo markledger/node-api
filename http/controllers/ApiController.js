@@ -30,13 +30,12 @@ exports.get = async (request, response, next) => {
 }
 
 
-exports.update = async (request, response, next) => {
+exports.updateOne = async (request, response, next) => {
 
 	const service = new makeService(request);
 	try{
-		const updatedUser = await service.update();
-		console.log("update in controller", updatedUser)
-		return response.status(200).json(updatedUser);
+		const updatedEntity = await service.updateOne();
+		return response.status(200).json(updatedEntity);
 
 	}catch(err){
 		return next(err);
@@ -44,3 +43,14 @@ exports.update = async (request, response, next) => {
 	}	
 }
 
+
+exports.create = async (request, response, next) => {
+	 const service = new makeService(request);
+	 try{
+	    const savedEntity = await service.create();
+		return response.status(201).json(savedEntity);
+	       
+    } catch(err){
+      return next(err);
+    }
+}

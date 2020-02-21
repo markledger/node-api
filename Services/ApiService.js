@@ -31,44 +31,33 @@ class ApiService {
   }
 
 
-  create() {
+  async create() {
     const model = new this.model()
+    Object.assign(model, this.sanitizePostedData(this.request.body));
 
-    this.mapRequestDataToModel(model)
-
-    return  model.save();
+    return [await model.save()];
   }
 
-  mapRequestDataToModel(data)
-  {
-    const fillableAttributes = pick(this.request.body, this.model.fillable);
-    return data.map(entity => {
-       Object.assign(entity, fillableAttributes);
-    });
-   
-  }
-
-  touchUpdatedTimestamp(data){
-    return data.map(entity => {
-        return entity.updatedAt = new Date();
-    });
+  /**
+  * Filter out the non fillable properties out of a single entity.
+  */
+  sanitizePostedData(entity){
+    return pick(entity, this.model.fillable)
   }
 
   
-  async update() {
+  async updateOne() {
     
-    const data = await this.get();
+    const model = (await this.get()).pop();
 
-    if (!data){
+    if (!model){
       return null; 
     }
 
-    this.mapRequestDataToModel(data);
-    this.touchUpdatedTimestamp(data);
-      
-    const savePromises = [];
-    data.forEach(entity => savePromises.push(entity.save()));
-    return await Promise.all(savePromises);
+    const updatedModel = Object.assign(model, this.sanitizePostedData(this.request.body));
+    updatedModel.touchUpdatedTimestamp();
+  
+    return [await updatedModel.save()];  
     
   }
 
