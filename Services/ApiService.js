@@ -16,14 +16,12 @@ class ApiService {
   async get(){
 
     const id = get(this.request.params, 'id');
-    const page = parseInt(this.request.params.page, 10) || 0;
-    const perPage = parseInt(this.request.params['per-page'], 10) || 5;
-
+    const page = parseInt(this.request.params.page, 10) || 1;
+    const limit = parseInt(this.request.params['per-page'], 10) || 5;
+    const sort = '-createdAt';
     if(!id){
-      return await this.model.find({})
-                      .limit(perPage)
-                      .skip(perPage * 0)
-                      .sort('-createdAt');
+      return await this.model
+      .paginate({}, { page, limit, sort });
     }
 
     return [await this.model.findById(id)];

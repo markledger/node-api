@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const validator = require('validator');
 const LoginError = require('../Exceptions/LoginException');
 const jwt = require('jsonwebtoken');
+const mongoosePaginate = require('mongoose-paginate');
 
 const UserSchema = new mongoose.Schema({
     first_name: {
@@ -44,7 +45,7 @@ const UserSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-
+UserSchema.plugin(mongoosePaginate)
 UserSchema.statics.fillable = ['first_name','last_name', 'email', 'password']; 
 UserSchema.statics.showOnApi = ['_id','user', 'first_name','last_name', 'email', 'token', 'createdAt', 'updatedAt'];
 
@@ -91,6 +92,14 @@ UserSchema.pre('save', async function(next) {
     next();
 });
 
+UserSchema.methods.toJSON = function(){
+    const user  = this;
+    const userObject = user.toObject();
 
-// model can be accessed anywhere in application with mongoose.model('User')
+    delete userObject.tokens;
+    delete userObject.password;
+
+    return userObject;
+}
+
 mongoose.model('User', UserSchema)

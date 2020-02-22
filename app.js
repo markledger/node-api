@@ -5,7 +5,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose  = require('mongoose');
 const mung = require('express-mung');
-const removeHiddenOnApiFields = require('./middleware/response.middleware');
 const isProduction = process.env.NODE_ENV === 'production';
 const dotenv = require('dotenv');
 dotenv.config();
@@ -33,8 +32,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 //response middleware
-app.use(removeHiddenOnApiFields);
+// app.use(afterMiddleware);
 
 
 
