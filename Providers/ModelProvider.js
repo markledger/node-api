@@ -9,7 +9,6 @@ module.exports  = function(request){
       case 'Logout':
         return null;    
       case 'Login':
-      case 'User':
       case 'Register':
         return mongoose.model('User');
       default:

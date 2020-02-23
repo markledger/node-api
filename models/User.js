@@ -9,7 +9,7 @@ const mongoosePaginate = require('mongoose-paginate');
 const UserSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        trime: true,
+        trim: true,
         required: [true, "can't be blank"],
         trim: true
     },
@@ -70,9 +70,14 @@ UserSchema.statics.findByLoginCredentials = async function(email, password){
     return user;
 }
 
+
+
+UserSchema.statics.sortBy = ['createdAt|desc', 'createdAt|asc', 'email|asc', 'email|desc'];
+
+
+
 UserSchema.methods.generateAuthToken = async function(){
     const user = this;
-    console.log(user._id);
     const token = jwt.sign({ _id: user._id }, process.env.SALT);
     user.tokens = user.tokens.concat({ token });
     await user.save();

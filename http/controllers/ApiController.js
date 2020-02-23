@@ -7,15 +7,14 @@ const fs = require('fs')
 
 function makeService(request)
 {
-	console.log('making service')
-	const entity = helpers.ucfirst(request.params.entity);
-console.log(entity)
-	const basePath = './Services/'
-console.log(`${basePath}${entity}Service.js`)
-	try {
 
+	const entity = helpers.ucfirst(request.params.entity);
+
+	const basePath = './Services/'
+	try {
 	  if (fs.existsSync(`${basePath}${entity}Service.js`)) {
 	    const CustomService = require(`../.${basePath}${entity}Service`);
+	    
 		return new CustomService(request);
 	  }
 	  return new ApiService(request);	
@@ -61,7 +60,7 @@ exports.updateOne = async (request, response, next) => {
 
 
 exports.create = async (request, response, next) => {
-console.log('FIRED API CONTROLLER CREATE')
+
 	 const service = makeService(request);
 
 	 try{
@@ -69,6 +68,7 @@ console.log('FIRED API CONTROLLER CREATE')
 		return response.status(201).json(savedEntity);
 	       
     } catch(err){
+
       return next(err);
     }
 }

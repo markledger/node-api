@@ -18,10 +18,13 @@ class ApiService {
     const id = get(this.request.params, 'id');
     const page = parseInt(this.request.params.page, 10) || 1;
     const limit = parseInt(this.request.params['per-page'], 10) || 5;
-    const sort = '-createdAt';
+    const sort = this.getSortBy();
+    const populate = this.filterRequestedRelationships();
+
     if(!id){
-      return await this.model
-      .paginate({}, { page, limit, sort });
+
+      return await this.model.paginate({}, {populate, page, limit, sort});
+      
     }
 
     return [await this.model.findById(id)];
@@ -59,6 +62,39 @@ class ApiService {
     
   }
 
+  /**
+  * Filter the requested 'with' relationships requested in the query string
+  * against the valid list available for inclusion that is set on the schema.
+  */
+  filterRequestedRelationships(){
+  
+    const requestedRelationships = get(this.request.query, 'with');
+    if(!requestedRelationships){
+      return [];
+    }
+    return requestedRelationships.split(',')
+              .filter(relation => this.model.withRelationships.includes(relation));
+  }
+
+  /**
+  * Fetch the sort by paramter after filtering against valid list of options.
+  * Only return the first to sort by.
+  */
+  getSortBy(){
+    const sortBy = get(this.request.query, 'sort');
+    if(!sortBy){
+      return [];
+    }
+
+
+    let sort = sortBy.split(',')
+                     .filter(sortType => this.model.sortBy.includes(sortType))
+                     .shift()
+
+    sort = sort.split('|');
+    let order = sort[1] === 'asc' ? '' : '-';
+    return `${order}${sort[0]}`
+  }
 
 
 }

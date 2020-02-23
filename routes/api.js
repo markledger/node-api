@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const ApiController = require('../http/controllers/ApiController');
 const authorised = require('../middleware/authorisation');
 
-const commonRoutes = ['user'];
+const commonRoutes = ['user', 'recipe'];
 const baseRoute = {
 	'get' : `^/:entity(${commonRoutes.join('|')})`,
 	'post' :  `^/:entity(${commonRoutes.join('|')}|logout)`,	

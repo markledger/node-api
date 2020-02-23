@@ -22,7 +22,7 @@ if(isProduction){
 }
 
 require('./models/User');
-
+require('./models/Recipe')
 
 var app = express();
 
