@@ -45,6 +45,13 @@ const UserSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
+
+UserSchema.virtual('recipes', {
+    ref: 'Recipe',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 UserSchema.plugin(mongoosePaginate)
 UserSchema.statics.fillable = ['first_name','last_name', 'email', 'password']; 
 UserSchema.statics.showOnApi = ['_id','user', 'first_name','last_name', 'email', 'token', 'createdAt', 'updatedAt'];
@@ -74,7 +81,7 @@ UserSchema.statics.findByLoginCredentials = async function(email, password){
 
 UserSchema.statics.sortBy = ['createdAt|desc', 'createdAt|asc', 'email|asc', 'email|desc'];
 
-
+UserSchema.statics.withRelationships = ['recipes'];
 
 UserSchema.methods.generateAuthToken = async function(){
     const user = this;
@@ -96,6 +103,8 @@ UserSchema.pre('save', async function(next) {
 
     next();
 });
+UserSchema.set('toObject', { virtuals: true })
+UserSchema.set('toJSON', { virtuals: true })
 
 UserSchema.methods.toJSON = function(){
     const user  = this;

@@ -20,14 +20,12 @@ class ApiService {
     const limit = parseInt(this.request.params['per-page'], 10) || 5;
     const sort = this.getSortBy();
     const populate = this.filterRequestedRelationships();
-
+console.log({populate, page, limit, sort})
     if(!id){
-
       return await this.model.paginate({}, {populate, page, limit, sort});
-      
     }
 
-    return [await this.model.findById(id)];
+    return [await this.model.paginate({id}, {populate, page, limit, sort})];
 
   }
 
