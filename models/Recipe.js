@@ -1,35 +1,42 @@
-const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
-const validator = require('validator');
-const LoginError = require('../Exceptions/LoginException');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
+const validator = require("validator");
+const LoginError = require("../Exceptions/LoginException");
+const mongoosePaginate = require("mongoose-paginate");
+const BaseSchema = require("./BaseSchema");
 
-const RecipeSchema = new mongoose.Schema({
+const schema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        trim: true,
-        required: [true, "can't be blank"],
-        trim: true
+      type: String,
+      trim: true,
+      required: [true, "can't be blank"],
+      trim: true
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'  
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User"
     }
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-RecipeSchema.plugin(mongoosePaginate)
-RecipeSchema.statics.fillable = ['name','owner'];
+class Recipe extends BaseSchema {
+  static fillable = ["name", "owner"];
+  static withRelationships = ["owner"];
 
-//list the relationships which can be expanded using the ?with= 
-RecipeSchema.statics.withRelationships = ['owner'];
-RecipeSchema.statics.sortBy = ['createdAt|desc', 'createdAt|asc', 'name|asc', 'name|desc'];
-
-RecipeSchema.plugin(uniqueValidator, {message: 'is already taken'});
-
-RecipeSchema.methods.touchUpdatedTimestamp = function(){
-    this.updatedAt = new Date();
+  constructor() {
+    super();
+    console.log("sorting by", this.sortBy);
+    this.sortBy.concat(["name:asc", "name:desc"]);
+  }
 }
 
+schema.plugin(mongoosePaginate);
 
-mongoose.model('Recipe', RecipeSchema)
+schema.plugin(uniqueValidator, { message: "is already taken" });
+schema.set("toObject", { virtuals: true });
+schema.set("toJSON", { virtuals: true });
+schema.loadClass(Recipe);
+mongoose.model("Recipe", schema);
